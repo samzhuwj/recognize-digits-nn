@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as scio
 
-import displayData as dd
-import predict as pd
+from displayData import display_data 
+from predict import predict
 
 
 plt.ion()
@@ -29,8 +29,7 @@ m = y.size
 # Randomly select 100 data points to display
 rand_indices = np.random.permutation(range(m))
 selected = X[rand_indices[0:100], :]
-
-dd.display_data(selected)
+display_data(selected)
 
 input('Program paused. Press ENTER to continue')
 
@@ -38,7 +37,6 @@ input('Program paused. Press ENTER to continue')
 # ===================== Part 2: Loading Parameters =====================
 # In this part of the exercise, we load some pre-initiated
 # neural network parameters
-
 print('Loading Saved Neural Network Parameters ...')
 
 data = scio.loadmat('ex3weights.mat')
@@ -51,10 +49,9 @@ theta2 = data['Theta2']
 # the labels. You will now implement the "predict" function to use the
 # neural network to predict the labels of the training set. This lets
 # you compute the training set accuracy.
+pred = predict(theta1, theta2, X)
 
-pred = pd.predict(theta1, theta2, X)
-
-print('Training set accuracy: {}'.format(np.mean(pred == y)*100))
+print('Training set accuracy: {}'.format(np.mean(pred==y)*100))
 
 input('Program paused. Press ENTER to continue')
 
@@ -81,15 +78,18 @@ def getch():
 
 # Randomly permute examples
 rp = np.random.permutation(range(m))
+
 for i in range(m):
     print('Displaying Example image')
+    
     example = X[rp[i]]
     example = example.reshape((1, example.size))
-    dd.display_data(example)
+    display_data(example)
+    pred = predict(theta1, theta2, example)
 
-    pred = pd.predict(theta1, theta2, example)
     print('Neural network prediction: {} (digit {})'.format(pred, np.mod(pred, 10)))
 
     s = input('Paused - press ENTER to continue, q + ENTER to exit: ')
+
     if s == 'q':
         break
